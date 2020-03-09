@@ -3,10 +3,11 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
+import {Table} from './components/TemperatureTable.jsx';
 
 import './assets/stylesheets/style.css';
 
-const { BACKEND_PORT } = process.env;
+const BACKEND_PORT = process.env.BACKEND_PORT || 9000;
 const baseUrl = window.location.hostname;
 const backendUrl = `http://${baseUrl}:${BACKEND_PORT}`;
 
@@ -24,6 +25,17 @@ const getGreetingFromBackend = async () => {
   return { greeting: 'Could not get greeting from backend' };
 };
 
+const getEventFromBackend = async () => {
+  try {
+    const url = `${backendUrl}/api/events`;
+    console.log(`Getting greeting from ${url}`);
+    const response = await fetch(url);
+    return response.json();
+  } catch (error) {
+    console.error(error);
+  }
+  return { greeting: 'Could not get greeting from backend' };
+};
 
 const BackendGreeting = (props) => (
   <div>
@@ -48,17 +60,25 @@ class App extends Component {
     super(props);
     this.state = {
       greeting: '',
+      events: []
     };
   }
 
   async componentDidMount() {
     const response = await getGreetingFromBackend();
     this.setState({ greeting: response.greeting });
+    const events = await getEventFromBackend();
+    console.log(events)
+    this.setState({events: events.results});
+    console.log(this.state.events)
   }
 
   render() {
     return (
-      <BackendGreeting greeting={this.state.greeting} />
+      <>
+        <BackendGreeting greeting={this.state.greeting} />
+        <Table events={this.state.events}/>
+      </>
     );
   }
 }
