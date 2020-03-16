@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import {Table} from './components/TemperatureTable.jsx';
+import { Line } from 'react-chartjs-2';
 
 import './assets/stylesheets/style.css';
 
@@ -34,7 +35,7 @@ const getEventFromBackend = async () => {
   } catch (error) {
     console.error(error);
   }
-  return { greeting: 'Could not get greeting from backend' };
+  return { greeting: 'Could not get event from backend' };
 };
 
 const BackendGreeting = (props) => (
@@ -46,6 +47,34 @@ const BackendGreeting = (props) => (
     </p>
   </div>
 );
+
+const getData = (events) => ({
+
+  datasets: [
+    {
+      label: 'Temperature',
+      fill: false,
+      lineTension: 0.1,
+      backgroundColor: 'rgba(75,192,192,0.4)',
+      borderColor: 'rgba(75,192,192,1)',
+      borderJoinStyle: 'miter',
+      pointBorderColor: 'rgba(75,192,192,1)',
+      pointBackgroundColor: '#fff',
+      pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+      pointHoverBorderColor: 'rgba(220,220,220,1)',
+      pointHoverBorderWidth: 1,
+      pointRadius: 1,
+      data: events.slice( events.length - 100).map(event => {
+        const timestamp = event.timestamp
+        const temperature = event.temperature
+        return {
+          x: timestamp,
+          y: temperature
+        }
+      })
+    }
+  ]
+})
 
 BackendGreeting.propTypes = {
   greeting: PropTypes.string,
@@ -78,6 +107,19 @@ class App extends Component {
       <>
         <BackendGreeting greeting={this.state.greeting} />
         <Table events={this.state.events}/>
+        <Line 
+          data={getData(this.state.events)}
+          options={{
+                scales: {
+                  xAxes: [{
+                    type: 'time'
+                    
+                  }
+                ]
+              }
+            }
+          }
+        />
       </>
     );
   }
