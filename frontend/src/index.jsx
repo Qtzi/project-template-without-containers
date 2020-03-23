@@ -55,6 +55,27 @@ const getData = (events) => ({
       label: 'Temperature',
       fill: false,
       lineTension: 0.1,
+      backgroundColor: 'rgba(255, 0, 0, 0.8)',
+      borderColor: 'rgba(255, 0, 0, 0.8)',
+      borderJoinStyle: 'miter',
+      pointBorderColor: 'rgba(255, 0, 0, 0.8)',
+      pointBackgroundColor: '#fff',
+      pointHoverBackgroundColor: 'rgba(255, 0, 0, 0.8)',
+      pointHoverBorderColor: 'rgba(220,220,220,1)',
+      pointHoverBorderWidth: 1,
+      pointRadius: 1,
+      data: events.slice(events.length - 100).map(event => {
+        const timestamp = event.timestamp
+        const temperature = event.temperature
+        return {
+          x: timestamp,
+          y: temperature,
+        }
+      })
+    }, {
+      label: 'Humidity',
+      fill: false,
+      lineTension: 0.1,
       backgroundColor: 'rgba(75,192,192,0.4)',
       borderColor: 'rgba(75,192,192,1)',
       borderJoinStyle: 'miter',
@@ -64,13 +85,12 @@ const getData = (events) => ({
       pointHoverBorderColor: 'rgba(220,220,220,1)',
       pointHoverBorderWidth: 1,
       pointRadius: 1,
-      data: events.slice( events.length - 100).map(event => {
+      data: events.slice(events.length - 100).map(event => {
         const timestamp = event.timestamp
-        const temperature = event.temperature
         const humidity = event.humidity
         return {
           x: timestamp,
-          y: (temperature, humidity)
+          y: humidity
         }
       })
     }
