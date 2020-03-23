@@ -67,9 +67,10 @@ const getData = (events) => ({
       data: events.slice( events.length - 100).map(event => {
         const timestamp = event.timestamp
         const temperature = event.temperature
+        const humidity = event.humidity
         return {
           x: timestamp,
-          y: temperature
+          y: (temperature, humidity)
         }
       })
     }
